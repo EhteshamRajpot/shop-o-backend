@@ -10,6 +10,6 @@ const connectDatabase = async () => {
         console.error('MongoDB connection error:', error.message);
         process.exit(1); // Exit the process on connection failure
     }
-}
+} 
 
 module.exports = connectDatabase;
