@@ -1,0 +1,6 @@
+# Ignore .env files within the config folder
+config/*.env
+
+# Other ignore patterns can go below
+node_modules/
+dist/
