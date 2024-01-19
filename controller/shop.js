@@ -13,7 +13,7 @@ const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const sendShopToken = require("../utils/shopToken");
 
 // create-shop
-router.post("/create-shop", upload.single("avatar"), async (req, res, next) => {
+router.post("/create-shop", upload.single("avatar"), catchAsyncErrors(async (req, res, next) => {
     try {
         const { email } = req.body;
         const sellerEmail = await Shop.findOne({ email });
@@ -62,7 +62,7 @@ router.post("/create-shop", upload.single("avatar"), async (req, res, next) => {
         console.error("Error creating user:", error.message);
         return next(new ErrorHandler("Error creating user", 500));
     }
-})
+}))
 
 // create activation token
 const createActivationToken = (user) => {
@@ -142,6 +142,24 @@ router.get(
         }
     })
 );
+
+// log out shop
+
+router.get("/logout", isSeller, catchAsyncErrors(async (req, res, next) => {
+    try {
+        res.cookie("seller_token", null, {
+            expires: new Date(Date.now()),
+            httpOnly: true
+        });
+
+        res.status(201).json({
+            success: true, 
+            message: "Log out successfully!"
+        })
+    } catch (error) {
+        return next(new ErrorHandler(error.message, 500))
+    }
+}))
 
 
 module.exports = router;  
