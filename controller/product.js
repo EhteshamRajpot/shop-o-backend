@@ -5,9 +5,9 @@ const Product = require("../model/product");
 const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
+const { isSeller } = require("../middleware/auth");
 
 // create product
-
 router.post("/create-product", upload.array("images"), catchAsyncErrors(async (req, res, next) => {
     try {
         const shopId = req.body.shopId;
@@ -50,5 +50,25 @@ router.get(
         }
     })
 );
+
+// delete product of a shop 
+router.delete("/delete-shop-product/:id", isSeller, catchAsyncErrors(async (req, res, next) => {
+    try {
+        const productId = req.params.id;
+        const product = await Product.findByIdAndDelete(productId)
+
+        if (!product) {
+            return next(new ErrorHandler("Product not found by this id", 500))
+        };
+
+        res.status(201).json({
+            success: true,
+            message: "Product deleted successfully!"
+        });
+    } catch (error) {
+        return next(new ErrorHandler(error, 400))
+
+    }
+}))
 
 module.exports = router;
