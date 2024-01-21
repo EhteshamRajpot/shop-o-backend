@@ -6,6 +6,7 @@ const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { isSeller } = require("../middleware/auth");
+const fs = require("fs")
 
 // create product
 router.post("/create-product", upload.array("images"), catchAsyncErrors(async (req, res, next) => {
@@ -55,7 +56,21 @@ router.get(
 router.delete("/delete-shop-product/:id", isSeller, catchAsyncErrors(async (req, res, next) => {
     try {
         const productId = req.params.id;
-        const product = await Product.findByIdAndDelete(productId)
+
+        const productData = await Product.findById(productId);
+
+        productData.images.forEach((imageUrl) => {
+            const filename = imageUrl;
+            const filePath = `uploads/${filename}`;
+
+            fs.unlink(filePath, (err) => {
+                if (err) {
+                    console.log(err) 
+                }
+            }) 
+        })
+
+        const product = await Product.findByIdAndDelete(productId);
 
         if (!product) {
             return next(new ErrorHandler("Product not found by this id", 500))

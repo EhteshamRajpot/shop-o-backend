@@ -3,7 +3,7 @@ const path = require("path");
 const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
-const User = require("../model/user");
+const User = require("../model/user"); 
 const { upload } = require("../multer");
 const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
@@ -69,7 +69,7 @@ const createActivationToken = (user) => {
     })
 }
 
-// activate user
+// activate user      
 router.post("/activation", catchAsyncErrors(async (req, res, next) => {
     try {
         const { activation_token } = req.body;
