@@ -153,13 +153,29 @@ router.get("/logout", isSeller, catchAsyncErrors(async (req, res, next) => {
         });
 
         res.status(201).json({
-            success: true, 
+            success: true,
             message: "Log out successfully!"
         })
     } catch (error) {
         return next(new ErrorHandler(error.message, 500))
     }
 }))
+
+// get shop info
+router.get(
+    "/get-shop-info/:id",
+    catchAsyncErrors(async (req, res, next) => {
+        try {
+            const shop = await Shop.findById(req.params.id);
+            res.status(201).json({
+                success: true,
+                shop,
+            });
+        } catch (error) {
+            return next(new ErrorHandler(error.message, 500));
+        }
+    })
+);
 
 
 module.exports = router;  
