@@ -87,7 +87,7 @@ router.delete("/delete-shop-product/:id", isSeller, catchAsyncErrors(async (req,
 }))
 
 // get all products
-router.get(
+router.get( 
     "/get-all-products",
     catchAsyncErrors(async (req, res, next) => {
       try {
