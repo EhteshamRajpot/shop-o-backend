@@ -34,7 +34,7 @@ router.post("/create-event", upload.array("images"), catchAsyncErrors(async (req
         return next(new ErrorHandler(error, 400))
     }
 }));
-
+ 
 // get all events
 router.get("/get-all-events", async (req, res, next) => {
     try {
