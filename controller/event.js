@@ -45,7 +45,7 @@ router.get("/get-all-events", async (req, res, next) => {
         });
     } catch (error) {
         return next(new ErrorHandler(error, 400));
-    }
+    } 
 });   
 
 // get all events of a shop
