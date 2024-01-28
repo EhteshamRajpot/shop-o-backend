@@ -4,7 +4,7 @@ const app = express();
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-  
+
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({
@@ -25,6 +25,7 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 const user = require("./controller/user");
 const shop = require("./controller/shop");
 const event = require("./controller/event");
+const payment = require("./controller/payment");
 const product = require("./controller/product");
 const coupoun = require("./controller/coupounCode");
 
@@ -33,6 +34,7 @@ app.use("/api/v2/shop", shop);
 app.use("/api/v2/event", event);
 app.use("/api/v2/product", product);
 app.use("/api/v2/coupoun", coupoun);
+app.use("/api/v2/payment", payment);
 
 // it's for ErrorHandling
 app.use(ErrorHandler);
