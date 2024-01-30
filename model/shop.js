@@ -24,7 +24,7 @@ const shopSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    phoneNumber: {
+    phoneNumber: { 
         type: Number,
         required: true
     },
