@@ -182,30 +182,27 @@ router.get(
 router.put(
     "/update-shop-avatar",
     isSeller,
+    upload.single("image"),
     catchAsyncErrors(async (req, res, next) => {
         try {
             let existsSeller = await Shop.findById(req.seller._id);
 
-            const imageId = existsSeller.avatar.public_id;
+            const existAvatarPath = `uploads/${existsSeller.avatar}`;
 
-            await cloudinary.v2.uploader.destroy(imageId);
+            if (fs.existsSync(existAvatarPath)) {
+                fs.unlinkSync(existAvatarPath);
+            } else {
+                console.error(`File not found: ${existAvatarPath}`);
+            }
+            const fileUrl = path.join(req.file.filename)
 
-            const myCloud = await cloudinary.v2.uploader.upload(req.body.avatar, {
-                folder: "avatars",
-                width: 150,
-            });
-
-            existsSeller.avatar = {
-                public_id: myCloud.public_id,
-                url: myCloud.secure_url,
-            };
-
-
-            await existsSeller.save();
+            const user = await Shop.findByIdAndUpdate(req.seller._id, {
+                avatar: fileUrl
+            })
 
             res.status(200).json({
                 success: true,
-                seller: existsSeller,
+                user
             });
         } catch (error) {
             return next(new ErrorHandler(error.message, 500));

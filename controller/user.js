@@ -196,7 +196,11 @@ router.put("/update-avatar", isAuthenticated, upload.single("image"), catchAsync
 
         const existAvatarPath = `uploads/${existsUser.avatar}`;
 
-        fs.unlinkSync(existAvatarPath);
+        if (fs.existsSync(existAvatarPath)) {
+            fs.unlinkSync(existAvatarPath);
+        } else {
+            console.error(`File not found: ${existAvatarPath}`);
+        }
 
         const fileUrl = path.join(req.file.filename)
 
