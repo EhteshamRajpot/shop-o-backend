@@ -8,7 +8,7 @@ const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
 const { isSeller } = require("../middleware/auth");
 const fs = require("fs")
-const {isAuthenticated } = require("../middleware/auth");
+const { isAuthenticated } = require("../middleware/auth");
 
 // create product
 router.post("/create-product", upload.array("images"), catchAsyncErrors(async (req, res, next) => {
@@ -29,7 +29,7 @@ router.post("/create-product", upload.array("images"), catchAsyncErrors(async (r
             res.status(201).json({
                 success: true,
                 product
-            }) 
+            })
 
         }
     } catch (error) {
@@ -161,6 +161,7 @@ router.put(
         }
     })
 );
+
 
 // all products --- for admin
 router.get(

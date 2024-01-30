@@ -71,7 +71,7 @@ router.get(
         }
     })
 );
- 
+
 // get all orders of seller
 router.get(
     "/get-seller-all-orders/:shopId",
@@ -108,7 +108,7 @@ router.put(
                 order.cart.forEach(async (o) => {
                     await updateOrder(o._id, o.qty);
                 });
-            } 
+            }
 
             order.status = req.body.status;
 
@@ -134,6 +134,25 @@ router.put(
 
                 await product.save({ validateBeforeSave: false });
             }
+            // async function updateOrder(id, qty) {
+            //     const product = await Product.findById(id);
+
+            //     if (!product) {
+            //         console.error(`Product not found with id ${id}`);
+            //         return; // Exit the function if product is not found
+            //     }
+
+            //     product.stock -= qty;
+            //     product.sold_out += qty;
+
+            //     try {
+            //         await product.save({ validateBeforeSave: false });
+            //         console.log(`Product updated successfully: ${product}`);
+            //     } catch (error) {
+            //         console.error(`Error updating product: ${error.message}`);
+            //     }
+            // }
+
 
             async function updateSellerInfo(amount) {
                 const seller = await Shop.findById(req.seller.id);
@@ -147,6 +166,9 @@ router.put(
         }
     })
 );
+
+
+
 
 // give a refund ----- user
 router.put(
