@@ -108,7 +108,7 @@ router.put(
                 order.cart.forEach(async (o) => {
                     await updateOrder(o._id, o.qty);
                 });
-            }
+            } 
 
             order.status = req.body.status;
 
