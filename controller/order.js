@@ -205,7 +205,7 @@ router.put(
                 return next(new ErrorHandler("Order not found with this id", 400));
             }
 
-            order.status = req.body.status;
+            order.status = req.body.status; 
 
             await order.save();
 
