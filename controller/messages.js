@@ -11,15 +11,17 @@ router.post("/create-new-message", upload.array("images"), catchAsyncErrors(asyn
         const messageData = req.body;
         if (req.files) {
             const files = req.files;
-            const imageUrls = files.map((file) => `${file.filename}`)
+            const imageUrls = files.map((file) => `${file.fileName}`)
             messageData.images = imageUrls
         }
 
         messageData.conversationId = req.body.conversationId;
         messageData.sender = req.body.sender;
+        messageData.text = req.body.text;
 
         const message = new Messages({
             conversationId: messageData.conversationId,
+            text: messageData.text,
             sender: messageData.sender,
             images: messageData.images ? messageData.images : undefined
         })

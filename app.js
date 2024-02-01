@@ -28,6 +28,7 @@ const order = require("./controller/order");
 const event = require("./controller/event");
 const payment = require("./controller/payment");
 const product = require("./controller/product");
+const message = require("./controller/messages");
 const coupoun = require("./controller/coupounCode");
 const conversation = require("./controller/conversation");
 
@@ -37,6 +38,7 @@ app.use("/api/v2/order", order);
 app.use("/api/v2/event", event);
 app.use("/api/v2/product", product);
 app.use("/api/v2/coupoun", coupoun);
+app.use("/api/v2/message", message);
 app.use("/api/v2/payment", payment);
 app.use("/api/v2/conversation", conversation);
 
