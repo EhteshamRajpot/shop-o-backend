@@ -5,7 +5,7 @@ const Event = require("../model/event");
 const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
-const { isSeller } = require("../middleware/auth");
+const { isSeller, isAuthenticated, isAdmin } = require("../middleware/auth");
 const fs = require("fs");
 
 // create event
@@ -34,7 +34,7 @@ router.post("/create-event", upload.array("images"), catchAsyncErrors(async (req
         return next(new ErrorHandler(error, 400))
     }
 }));
- 
+
 // get all events
 router.get("/get-all-events", async (req, res, next) => {
     try {
@@ -45,8 +45,8 @@ router.get("/get-all-events", async (req, res, next) => {
         });
     } catch (error) {
         return next(new ErrorHandler(error, 400));
-    } 
-});    
+    }
+});
 
 // get all events of a shop
 router.get(
@@ -99,5 +99,24 @@ router.delete("/delete-shop-event/:id", isSeller, catchAsyncErrors(async (req, r
     }
 }))
 
+// all events --- for admin
+router.get(
+    "/admin-all-events",
+    isAuthenticated,
+    isAdmin("Admin"),
+    catchAsyncErrors(async (req, res, next) => {
+        try {
+            const events = await Event.find().sort({
+                createdAt: -1,
+            });
+            res.status(201).json({
+                success: true,
+                events,
+            });
+        } catch (error) {
+            return next(new ErrorHandler(error.message, 500));
+        }
+    })
+);
 
 module.exports = router;
