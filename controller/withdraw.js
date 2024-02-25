@@ -40,7 +40,7 @@ router.post(
       shop.availableBalance = shop.availableBalance - amount;
 
       await shop.save();
-
+ 
       res.status(201).json({
         success: true,
         withdraw,
