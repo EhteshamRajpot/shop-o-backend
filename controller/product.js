@@ -6,7 +6,7 @@ const Order = require("../model/order");
 const Shop = require("../model/shop");
 const { upload } = require("../multer");
 const ErrorHandler = require("../utils/ErrorHandler");
-const { isSeller } = require("../middleware/auth");
+const { isSeller, isAdmin } = require("../middleware/auth");
 const fs = require("fs")
 const { isAuthenticated } = require("../middleware/auth");
 
@@ -166,8 +166,8 @@ router.put(
 // all products --- for admin
 router.get(
     "/admin-all-products",
-    // isAuthenticated,
-    // isAdmin("Admin"),
+    isAuthenticated,
+    isAdmin("Admin"),
     catchAsyncErrors(async (req, res, next) => {
         try {
             const products = await Product.find().sort({

@@ -64,14 +64,14 @@ router.get(
         }
     })
 );
-
+ 
 // delete events of a shop 
-router.delete("/delete-shop-event/:id", isSeller, catchAsyncErrors(async (req, res, next) => {
+router.delete("/delete-shop-event/:id", catchAsyncErrors(async (req, res, next) => {
     try {
         const productId = req.params.id;
 
         const eventData = await Event.findById(productId);
-
+ 
         eventData.images.forEach((imageUrl) => {
             const filename = imageUrl;
             const filePath = `uploads/${filename}`;
