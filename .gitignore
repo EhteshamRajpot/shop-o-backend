@@ -1,9 +1,9 @@
 # Ignore .env files within the config folder
-config/*.env
+# config/*.env
 
 # Other ignore patterns can go below
 node_modules/
 dist/
 
-uploads/
+# uploads/
  

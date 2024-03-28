@@ -9,6 +9,7 @@ const ErrorHandler = require("../utils/ErrorHandler");
 const { isSeller, isAdmin } = require("../middleware/auth");
 const fs = require("fs")
 const { isAuthenticated } = require("../middleware/auth");
+const Event = require("../model/event");
 
 // create product
 router.post("/create-product", upload.array("images"), catchAsyncErrors(async (req, res, next) => {
@@ -114,43 +115,85 @@ router.put(
             const { user, rating, comment, productId, orderId } = req.body;
 
             const product = await Product.findById(productId);
+            const event = await Event.findById(productId);
 
-            const review = {
-                user,
-                rating,
-                comment,
-                productId,
-            };
+            if (product && product) {
+                const review = {
+                    user,
+                    rating,
+                    comment,
+                    productId,
+                };
 
-            const isReviewed = product.reviews.find(
-                (rev) => rev.user._id === req.user._id
-            );
+                const isReviewed = product.reviews.find(
+                    (rev) => rev.user._id === req.user._id
+                );
 
-            if (isReviewed) {
+                if (isReviewed) {
+                    product.reviews.forEach((rev) => {
+                        if (rev.user._id === req.user._id) {
+                            (rev.rating = rating), (rev.comment = comment), (rev.user = user);
+                        }
+                    });
+                } else {
+                    product.reviews.push(review);
+                }
+
+                let avg = 0;
+
                 product.reviews.forEach((rev) => {
-                    if (rev.user._id === req.user._id) {
-                        (rev.rating = rating), (rev.comment = comment), (rev.user = user);
-                    }
+                    avg += rev.rating;
                 });
-            } else {
-                product.reviews.push(review);
+
+                product.ratings = avg / product.reviews.length;
+
+                await product.save({ validateBeforeSave: false });
+
+                await Order.findByIdAndUpdate(
+                    orderId,
+                    { $set: { "cart.$[elem].isReviewed": true } },
+                    { arrayFilters: [{ "elem._id": productId }], new: true }
+                );
             }
 
-            let avg = 0;
+            if (event && event) {
+                const review = {
+                    user,
+                    rating,
+                    comment,
+                    productId,
+                };
 
-            product.reviews.forEach((rev) => {
-                avg += rev.rating;
-            });
+                const isReviewed = event.reviews.find(
+                    (rev) => rev.user._id === req.user._id
+                );
 
-            product.ratings = avg / product.reviews.length;
+                if (isReviewed) {
+                    event.reviews.forEach((rev) => {
+                        if (rev.user._id === req.user._id) {
+                            (rev.rating = rating), (rev.comment = comment), (rev.user = user);
+                        }
+                    });
+                } else {
+                    event.reviews.push(review);
+                }
 
-            await product.save({ validateBeforeSave: false });
+                let avg = 0;
 
-            await Order.findByIdAndUpdate(
-                orderId,
-                { $set: { "cart.$[elem].isReviewed": true } },
-                { arrayFilters: [{ "elem._id": productId }], new: true }
-            );
+                event.reviews.forEach((rev) => {
+                    avg += rev.rating;
+                });
+
+                event.ratings = avg / event.reviews.length;
+
+                await event.save({ validateBeforeSave: false });
+
+                await Order.findByIdAndUpdate(
+                    orderId,
+                    { $set: { "cart.$[elem].isReviewed": true } },
+                    { arrayFilters: [{ "elem._id": productId }], new: true }
+                );
+            }
 
             res.status(200).json({
                 success: true,
